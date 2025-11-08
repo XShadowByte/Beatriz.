@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Beatriz 💖 — Galería Especial</title>
+
+  <style>
+    :root{
+      --bg1:#fff0f6;
+      --accent:#ff6fb5;
+      --accent-2:#ff4da6;
+      --muted:#6b6b6b;
+      font-family: "Poppins", sans-serif;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:linear-gradient(135deg,#ffe6f0,#fff7fb);
+      color:#333;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:1100px;
+      background:white;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 10px 30px rgba(255,77,166,0.15);
+      display:grid;
+      grid-template-columns:1fr 400px;
+    }
+
+    @media(max-width:900px){
+      .wrap{grid-template-columns:1fr;}
+    }
+
+    .left{
+      padding:20px;
+      text-align:center;
+    }
+
+    .slider{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/9;
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .slide{
+      position:absolute;
+      inset:0;
+      background-size:cover;
+      background-position:center;
+      opacity:0;
+      transition:opacity 0.8s ease;
+    }
+
+    .slide.visible{opacity:1;}
+
+    .caption{
+      position:absolute;
+      bottom:10px;
+      left:10px;
+      right:10px;
+      background:rgba(255,111,181,0.3);
+      color:white;
+      padding:10px;
+      border-radius:10px;
+      font-weight:500;
+      backdrop-filter:blur(5px);
+    }
+
+    .controls{
+      margin-top:15px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+    }
+
+    .btn{
+      background:var(--accent);
+      color:white;
+      border:none;
+      border-radius:25px;
+      padding:10px 20px;
+      cursor:pointer;
+      font-weight:600;
+      transition:0.3s;
+    }
+    .btn:hover{background:var(--accent-2);}
+
+    .right{
+      background:linear-gradient(180deg,rgba(255,255,255,0.8),rgba(255,240,250,0.8));
+      padding:25px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .profile{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .avatar{
+      width:70px;height:70px;border-radius:15px;
+      background:var(--accent-2);
+      color:white;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:bold;font-size:22px;
+    }
+
+    h1{font-size:22px;margin:0;}
+    p{color:var(--muted);font-size:14px;}
+
+    .bio{
+      background:rgba(255,255,255,0.7);
+      border-radius:12px;
+      padding:10px;
+      margin-top:15px;
+      font-size:14px;
+    }
+
+    .thumbs{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+      margin-top:10px;
+    }
+    .thumb{
+      aspect-ratio:1/1;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+    .thumb:hover img{transform:scale(1.05);}
+
+    .audio-bar{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:15px;
+    }
+
+    .audio-bar button{
+      background:var(--accent);
+      color:white;
+      border:none;
+      border-radius:50%;
+      width:40px;
+      height:40px;
+      font-size:18px;
+      cursor:pointer;
+    }
+
+    .progress{
+      flex:1;
+      height:8px;
+      background:rgba(0,0,0,0.1);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .progress i{
+      display:block;
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    }
+
+    /* Botón de broma */
+    .broma-btn{
+      margin-top:25px;
+      background:linear-gradient(90deg,#ff6fb5,#ff4da6);
+      border:none;
+      color:white;
+      padding:14px 20px;
+      font-size:16px;
+      font-weight:600;
+      border-radius:30px;
+      cursor:pointer;
+      transition:.3s;
+    }
+    .broma-btn:hover{transform:scale(1.05);}
+
+    /* Modal broma */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(255,200,230,0.95);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      text-align:center;
+      padding:20px;
+      z-index:10;
+    }
+
+    .modal.open{display:flex;}
+    .modal img{
+      width:250px;
+      border-radius:20px;
+      margin-bottom:20px;
+    }
+
+    .modal input, .modal button{
+      margin:8px;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #ff9acc;
+      font-size:1em;
+    }
+
+    .cerrar{
+      background-color:#ff99cc;
+      border:none;
+      color:white;
+      padding:10px 20px;
+      border-radius:20px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="left">
+    <div class="slider" id="slider"></div>
+    <div class="controls">
+      <button class="btn" id="prevBtn">◀</button>
+      <button class="btn" id="nextBtn">▶</button>
+    </div>
+  </div>
+
+  <div class="right">
+    <div>
+      <div class="profile">
+        <div class="avatar">B💖</div>
+        <div>
+          <h1>Beatriz — Galería</h1>
+          <p>Dulce, rosa y absolutamente única 🌸</p>
+        </div>
+      </div>
+      <div class="bio">
+        Una página creada solo para Beatriz.  
+        Cada foto muestra su encanto natural,  
+        acompañada de música y detalles hechos con cariño 💕.
+      </div>
+
+      <div class="thumbs" id="thumbs"></div>
+
+      <button class="broma-btn" onclick="abrirBroma()">💰 Pagarle al creador 💰</button>
+    </div>
+
+    <div>
+      <div class="audio-bar">
+        <button id="playBtn">♫</button>
+        <div class="progress"><i id="progressFill"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal broma -->
+<div class="modal" id="bromaModal">
+  <img src="https://media.tenor.com/nJpnjAhZZ-8AAAAC/movie-popcorn.gif" alt="viendo película">
+  <h2>El creador de la página está cobrando viendo una película 🍿</h2>
+  <p>Programa tu cita para pagarle con una tarde divertida 😏</p>
+  <label>Fecha:</label><input type="date" id="fecha">
+  <label>Hora:</label><input type="time" id="hora">
+  <label>Película:</label><input type="text" id="pelicula" placeholder="Ej: Barbie">
+  <button onclick="programar()">Confirmar cita 🎟️</button>
+  <button class="cerrar" onclick="cerrarBroma()">Cerrar</button>
+</div>
+
+<audio id="audio">
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  const IMAGES = Array.from({length:10}, (_,i)=>`foto${i+1}.jpg`);
+  const FRASES = [
+    "Eres magia en cada foto ✨",
+    "Sonríe, que todo brilla contigo 🌸",
+    "Tu esencia es pura luz 💖",
+    "Naturalmente hermosa 🌷",
+    "La elegancia hecha persona 💫",
+    "Tu energía ilumina todo 💕",
+    "Detalles que enamoran 💋",
+    "Increíble sin intentarlo 🌹",
+    "Simplemente Beatriz 🌼",
+    "Un suspiro de ternura 💗"
+  ];
+
+  const slider = document.getElementById('slider');
+  const thumbs = document.getElementById('thumbs');
+  let current = 0;
+  let slides = [];
+
+  IMAGES.forEach((src,i)=>{
+    const s = document.createElement('div');
+    s.className = 'slide';
+    s.style.backgroundImage = `url('${src}')`;
+    const c = document.createElement('div');
+    c.className = 'caption';
+    c.textContent = FRASES[i % FRASES.length];
+    s.appendChild(c);
+    slider.appendChild(s);
+    slides.push(s);
+
+    const t = document.createElement('div');
+    t.className = 'thumb';
+    const img = document.createElement('img');
+    img.src = src;
+    t.appendChild(img);
+    t.onclick=()=>mostrar(i);
+    thumbs.appendChild(t);
+  });
+
+  function mostrar(i){
+    if(i<0) i=slides.length-1;
+    if(i>=slides.length) i=0;
+    slides.forEach((s,idx)=>s.classList.toggle('visible',idx===i));
+    current=i;
+  }
+
+  document.getElementById('nextBtn').onclick=()=>mostrar(current+1);
+  document.getElementById('prevBtn').onclick=()=>mostrar(current-1);
+  mostrar(0);
+
+  // Música
+  const audio = document.getElementById('audio');
+  const playBtn = document.getElementById('playBtn');
+  const fill = document.getElementById('progressFill');
+  playBtn.onclick=()=>{
+    if(audio.paused) audio.play(); else audio.pause();
+  };
+  audio.ontimeupdate=()=>{
+    fill.style.width = (audio.currentTime/audio.duration*100)+'%';
+  };
+
+  // Modal broma
+  const modal = document.getElementById('bromaModal');
+  function abrirBroma(){modal.classList.add('open');}
+  function cerrarBroma(){modal.classList.remove('open');}
+  function programar(){
+    const f=document.getElementById('fecha').value;
+    const h=document.getElementById('hora').value;
+    const p=document.getElementById('pelicula').value;
+    if(!f||!h||!p){alert("Falta algo... ¿evadiendo el pago? 😏");return;}
+    alert(`🎉 ¡Cita programada!\nFecha: ${f}\nHora: ${h}\nPelícula: ${p}\n\nEl creador dice: ¡perfecto! Lleva palomitas, pero él elige el sillón 😎`);
+    cerrarBroma();
+  }
+</script>
+</body>
+</html>
