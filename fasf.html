@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Beatriz ✨ | Galería Rosa</title>
+
+  <style>
+    :root {
+      --rosa: #ff6fb5;
+      --rosa2: #ff4da6;
+      --lila: #ffd9f0;
+      --blanco: #fff;
+      --dorado: #ffd9a8;
+      --bg: linear-gradient(180deg,#fff0f7 0%, #ffe8f1 40%, #fffafc 100%);
+      --sombra: 0 10px 40px rgba(255, 111, 181, 0.25);
+      font-family: "Poppins", system-ui, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #4b2043;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #fff7fb, #ffe1ef);
+      box-shadow: var(--sombra);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--rosa2);
+      margin-bottom: 8px;
+    }
+
+    p.sub {
+      color: #805f79;
+      margin-bottom: 20px;
+    }
+
+    /* SLIDER */
+    .slider {
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16/9;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 8px 40px rgba(255, 77, 166, 0.2);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.05);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+    .slide.visible {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 2;
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #5b1140;
+      box-shadow: 0 6px 20px rgba(255,111,181,0.2);
+      animation: floatText 6s ease-in-out infinite;
+    }
+
+    @keyframes floatText {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Controls */
+    .controls {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      border: none;
+      background: linear-gradient(90deg, var(--rosa), var(--rosa2));
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform .2s ease, box-shadow .3s;
+      box-shadow: 0 4px 16px rgba(255,77,166,0.2);
+    }
+    .btn:hover { transform: scale(1.05); }
+
+    /* Thumbs */
+    .thumbs {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      width: 100%;
+      max-width: 900px;
+    }
+    .thumb {
+      aspect-ratio: 1/1;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: border .3s;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    .thumb:hover { border: 2px solid var(--rosa2); }
+    .thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    /* Audio player */
+    .audio {
+      margin-top: 30px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 20px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Modal (broma) */
+    .joke {
+      margin-top: 40px;
+      padding: 18px 24px;
+      background: linear-gradient(90deg,#ffe4f2,#fff);
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(255,77,166,0.1);
+      text-align: center;
+    }
+
+    .hidden { display: none; }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      h1 { font-size: 22px; }
+      .slider { aspect-ratio: 3/4; }
+      .caption { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Beatriz 💕</h1>
+    <p class="sub">Una galería hecha con cariño, estilo y un toque de magia rosa ✨</p>
+
+    <div class="slider" id="slider"></div>
+    <div class="controls">
+      <button class="btn" id="prev">◀ Anterior</button>
+      <button class="btn" id="next">Siguiente ▶</button>
+    </div>
+
+    <div class="thumbs" id="thumbs"></div>
+
+    <div class="audio">
+      <button class="btn" id="playMusic">♫ Música</button>
+      <span id="trackInfo" style="color:#5b1140;font-weight:600;">musica.mp3</span>
+      <audio id="audio" src="musica.mp3"></audio>
+    </div>
+
+    <div class="joke" id="joke">
+      <p>💸 ¿Disfrutaste la galería? Haz clic aquí para <strong>pagarle al creador</strong> 😏</p>
+      <button class="btn" id="openJoke">Pagar al creador</button>
+
+      <div id="jokeModal" class="hidden" style="margin-top:18px;">
+        <p style="font-weight:600;">El creador actualmente está ocupado viendo una película 🍿</p>
+        <p>Pero puedes <strong>agendar una cita</strong> con él 😎</p>
+        <label>📅 Elige una fecha:
+          <input type="date" id="fecha">
+        </label>
+        <br><br>
+        <label>🕓 Hora:
+          <input type="time" id="hora">
+        </label>
+        <br><br>
+        <label>🎬 Película:
+          <input type="text" id="pelicula" placeholder="Escribe el nombre">
+        </label>
+        <br><br>
+        <button class="btn" id="confirmar">Confirmar cita</button>
+        <p id="resultado" style="margin-top:12px;color:#6b004b;font-weight:600;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const IMAGES = Array.from({length:10},(_,i)=>`foto${i+1}.jpg`);
+    const PHRASES = [
+      "Brillas más que el sol ✨",
+      "Beatriz, puro arte y dulzura 💗",
+      "Una sonrisa que ilumina todo 💫",
+      "Cada foto, un pedacito de magia",
+      "Rosa es poder, y tú lo llevas con estilo 🌸",
+      "Natural, hermosa, auténtica 💕",
+      "Tu mirada dice más que mil palabras 💎",
+      "La elegancia tiene tu nombre",
+      "Pequeños momentos, grandes recuerdos",
+      "Beatriz, la reina del rosa 👑"
+    ];
+
+    const slider = document.getElementById('slider');
+    const thumbs = document.getElementById('thumbs');
+    let current = 0;
+    let slides = [];
+
+    function loadSlides(){
+      IMAGES.forEach((src,i)=>{
+        const s=document.createElement('div');
+        s.className='slide';
+        s.style.backgroundImage=`url("${src}")`;
+        const c=document.createElement('div');
+        c.className='caption';
+        c.textContent=PHRASES[i%PHRASES.length];
+        s.appendChild(c);
+        slider.appendChild(s);
+        slides.push(s);
+
+        const t=document.createElement('div');
+        t.className='thumb';
+        const img=document.createElement('img');
+        img.src=src;
+        t.appendChild(img);
+        t.onclick=()=>showSlide(i);
+        thumbs.appendChild(t);
+      });
+      showSlide(0);
+    }
+
+    function showSlide(i){
+      if(i<0) i=slides.length-1;
+      if(i>=slides.length) i=0;
+      slides.forEach((sl,idx)=> sl.classList.toggle('visible', idx===i));
+      current=i;
+    }
+
+    document.getElementById('next').onclick=()=>showSlide(current+1);
+    document.getElementById('prev').onclick=()=>showSlide(current-1);
+
+    // Música
+    const audio=document.getElementById('audio');
+    const btnPlay=document.getElementById('playMusic');
+    btnPlay.onclick=()=>{
+      if(audio.paused){ audio.play(); btnPlay.textContent='⏸ Pausar'; }
+      else { audio.pause(); btnPlay.textContent='♫ Música'; }
+    };
+
+    // Broma
+    const openJoke=document.getElementById('openJoke');
+    const jokeModal=document.getElementById('jokeModal');
+    const confirmar=document.getElementById('confirmar');
+    const resultado=document.getElementById('resultado');
+
+    openJoke.onclick=()=> jokeModal.classList.toggle('hidden');
+
+    confirmar.onclick=()=>{
+      const f=document.getElementById('fecha').value;
+      const h=document.getElementById('hora').value;
+      const p=document.getElementById('pelicula').value;
+      if(!f||!h||!p){
+        resultado.textContent="Falta completar los datos 😅";
+        return;
+      }
+      resultado.textContent=`🎉 ¡Felicidades! Cita programada para el ${f} a las ${h}, viendo "${p}" con el creador 😉`;
+    };
+
+    loadSlides();
+  </script>
+</body>
+</html>
